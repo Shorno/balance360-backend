@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import dotenv from "dotenv";
 
 dotenv.config();
+//updated
 
 const connectDB = async () => {
     try {
