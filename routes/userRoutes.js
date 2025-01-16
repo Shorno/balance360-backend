@@ -4,6 +4,9 @@ import {createOrUpdateUser, getRoleByEmail} from "../controllers/userController.
 const router = Router();
 
 router.post('/', createOrUpdateUser);
+router.get("/", (req, res) => {
+    res.send("Hello from user routes");
+});
 router.get("/role/:email", getRoleByEmail)
 
 
