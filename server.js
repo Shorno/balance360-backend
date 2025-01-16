@@ -17,7 +17,7 @@ connectDB();
 
 app.use(cors(
     {
-        origin: ["http://localhost:5173", "https://balance360.vercel.app/"],
+        origin: ["http://localhost:5173", "https://balance360.vercel.app"],
         credentials: true,
     }
 ));
