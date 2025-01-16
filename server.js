@@ -7,23 +7,30 @@ import connectDB from "./config/database.js";
 
 
 import userRoutes from "./routes/userRoutes.js"
-
+import trainerRoutes from "./routes/trainerRoutes.js"
 
 const app = express();
 
 connectDB();
 
 
-app.use(cors());
+app.use(cors(
+    {
+        origin: ["http://localhost:5173", "https://balance360.vercel.app/"],
+        credentials: true,
+    }
+));
 app.use(helmet());
 app.use(express.json());
 app.use(morgan('dev'));
 
-app.get('/api', (req, res) => {
+app.get('/', (req, res) => {
     res.send('Hello, this api server for Fit Fam Project');
 })
 
 app.use('/api/users', userRoutes);
+app.use('/api/trainers', trainerRoutes);
+
 
 
 const PORT = process.env.PORT || 5000;

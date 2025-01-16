@@ -1,5 +1,5 @@
-import User from '../models/User.js';
 import jwt from "jsonwebtoken";
+import {User} from "../models/User.js";
 
 const generateToken = (user) => {
     return jwt.sign({user: user.email}, process.env.JWT_SECRET, {expiresIn: '7d'});
@@ -66,3 +66,17 @@ export const createOrUpdateUser = async (req, res) => {
         });
     }
 };
+
+export const getRoleByEmail = async (req, res) => {
+    const {email} = req.params;
+    try {
+        const user = await User.findOne({email});
+        if (!user) {
+            return res.status(404).json({message: 'User not found'});
+        }
+        res.json({role: user.role});
+
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
