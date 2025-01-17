@@ -28,3 +28,5 @@ export const applyForTrainer = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
+
+

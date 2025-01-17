@@ -9,6 +9,7 @@ import morgan from 'morgan';
 import connectDB from "./config/database.js";
 import userRoutes from "./routes/userRoutes.js"
 import trainerRoutes from "./routes/trainerRoutes.js"
+import adminRoutes from "./routes/adminRoutes.js";
 
 const app = express();
 
@@ -33,6 +34,8 @@ app.get('/', (req, res) => {
 
 app.use('/api/users', userRoutes);
 app.use('/api/trainers', trainerRoutes);
+app.use('/api/admin', adminRoutes);
+
 
 
 
