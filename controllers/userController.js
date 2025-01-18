@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import {User} from "../models/User.js";
+import {TrainerApplication} from "../models/Trainer.js";
 
 const generateToken = (user) => {
     return jwt.sign({user: user.email}, process.env.JWT_SECRET, {expiresIn: '7d'});
@@ -77,6 +78,22 @@ export const getRoleByEmail = async (req, res) => {
         res.json({role: user.role});
 
     } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
+
+export const getApplicationStatus = async (req, res) => {
+    const {email} = req.params;
+    try {
+        const application = await TrainerApplication.findOne({email});
+        if (!application) {
+            return res.status(404).json({message: 'Application not found'});
+        }
+        res.json({
+            status: "success",
+            data: application
+        })
+    }catch (error) {
         res.status(500).json({message: error.message});
     }
 }

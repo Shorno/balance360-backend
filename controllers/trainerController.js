@@ -7,6 +7,7 @@ export const applyForTrainer = async (req, res) => {
             skills,
             availableDays,
             availableTime,
+            age,
             yearsOfExperience,
             profileImage,
             email,
@@ -15,6 +16,7 @@ export const applyForTrainer = async (req, res) => {
         const application = await TrainerApplication.create({
             fullName,
             email,
+            age,
             yearsOfExperience,
             profileImage,
             skills,

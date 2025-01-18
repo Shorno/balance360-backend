@@ -23,6 +23,10 @@ const trainerApplicationSchema = new mongoose.Schema({
     availableTime: {
         type: String
     },
+    age: {
+        type: Number,
+        required: true
+    },
     yearsOfExperience: {
         type: Number,
         required: true
