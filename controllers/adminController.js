@@ -78,3 +78,41 @@ export const approveTrainerApplication = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
+
+export const getApprovedTrainers = async (req, res) => {
+    try {
+        const trainers = await TrainerApplication.find({status: 'approved'});
+
+        return res.status(201).json({
+            status: 'success',
+            data: trainers,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            status: 'error',
+            message: 'Error getting approved trainers',
+            error: error.message
+        });
+    }
+}
+
+export const rejectTrainerApplication = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { rejectionReason } = req.body;
+
+        const application = await TrainerApplication.findById(id);
+        if (!application) {
+            return res.status(404).json({ message: 'Application not found' });
+        }
+
+        application.status = 'rejected';
+        application.rejectionReason = rejectionReason;
+        await application.save();
+
+        res.json({ message: 'Trainer application rejected' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

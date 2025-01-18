@@ -1,8 +1,8 @@
 import {Router} from "express";
 import {
-    approveTrainerApplication,
+    approveTrainerApplication, getApprovedTrainers,
     getTrainerApplicationDetail,
-    getTrainerApplications
+    getTrainerApplications, rejectTrainerApplication
 } from "../controllers/adminController.js";
 
 const router = Router();
@@ -10,6 +10,8 @@ const router = Router();
 router.get('/trainer-applications', getTrainerApplications);
 router.get('/trainer-applications/:id', getTrainerApplicationDetail);
 router.post('/trainer-applications/:id/approve', approveTrainerApplication);
+router.get('/trainers', getApprovedTrainers);
+router.post('/trainer-applications/:id/reject', rejectTrainerApplication);
 
 
 export default router;
