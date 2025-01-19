@@ -1,5 +1,6 @@
 import {TrainerApplication} from "../models/Trainer.js";
 import {User} from "../models/User.js";
+import {Class} from "../models/Class.js";
 
 export const getTrainerApplications = async (req, res) => {
     try {
@@ -112,6 +113,16 @@ export const rejectTrainerApplication = async (req, res) => {
         await application.save();
 
         res.json({ message: 'Trainer application rejected' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+export const addClass = async (req, res) => {
+    try {
+        const newClass = await Class.create(req.body);
+        res.status(201).json(newClass);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

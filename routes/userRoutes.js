@@ -8,4 +8,5 @@ router.get("/role/:email", getRoleByEmail)
 router.get("/application/:email", getApplicationStatus)
 
 
+
 export default router;
