@@ -93,7 +93,9 @@ export const getApplicationStatus = async (req, res) => {
             status: "success",
             data: application
         })
-    }catch (error) {
+    } catch (error) {
         res.status(500).json({message: error.message});
     }
 }
+
+
