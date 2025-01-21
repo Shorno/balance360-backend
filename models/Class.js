@@ -18,18 +18,20 @@ const classSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    maxParticipants : {
+    maxParticipants: {
         type: Number,
         required: true
     },
-    intensity : {
+    intensity: {
         type: String,
         required: true
     },
-    category : {
+    category: {
         type: String,
         required: true
     },
+    trainers: {type: [String], default: []},
+
 })
 
 export const Class = mongoose.model('Class', classSchema);

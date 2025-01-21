@@ -1,6 +1,7 @@
 import {TrainerApplication} from "../models/Trainer.js";
 import {User} from "../models/User.js";
 import {Slot} from "../models/Slot.js";
+import {Class} from "../models/Class.js";
 
 export const applyForTrainer = async (req, res) => {
     try {
@@ -71,6 +72,12 @@ export const addSlot = async (req, res) => {
             additionalInfo,
             trainerEmail
         });
+
+        await Class.findOneAndUpdate(
+            { name: selectedClass },
+            { $addToSet: { trainers: trainerEmail } },
+            { new: true }
+        );
         res.status(201).json(slot);
     } catch (error) {
         res.status(500).json({message: error.message});
