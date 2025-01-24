@@ -8,6 +8,8 @@ const slotSchema = new Schema({
     startTime: {type: String, required: true},
     additionalInfo: {type: String, required: true},
     trainerEmail: {type: String, required: true},
+    bookedCount: { type: Number, default: 0 },
+    maxCapacity: { type: Number, default: 10 }
 }, {
     timestamps: true
 });

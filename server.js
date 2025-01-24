@@ -37,7 +37,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/trainers', trainerRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/classes', classRoutes);
-app.use("/api/stripe", paymentRoutes)
+app.use("/api/payments", paymentRoutes)
 
 
 
