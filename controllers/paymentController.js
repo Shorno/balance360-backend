@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
+//update env
 export const makePayment = async (req, res) => {
     try {
         const { amount, planName } = req.body;
