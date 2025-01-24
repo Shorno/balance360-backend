@@ -17,12 +17,12 @@ const app = express();
 connectDB();
 
 
-app.use(cors(
-    {
-        origin: ["http://localhost:5173", "https://balance360.vercel.app"],
-        credentials: true,
-    }
-));
+app.use(cors({
+    origin: ["http://localhost:5173", "https://balance360.vercel.app"],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(helmet());
 app.use(express.json());
 app.use(morgan('dev'));
