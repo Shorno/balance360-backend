@@ -1,6 +1,8 @@
 import {TrainerApplication} from "../models/Trainer.js";
 import {User} from "../models/User.js";
 import {Class} from "../models/Class.js";
+import {Payment} from "../models/Payment.js";
+import {NewsLetter} from "../models/NewsLetter.js";
 
 export const getTrainerApplications = async (req, res) => {
     try {
@@ -100,21 +102,21 @@ export const getApprovedTrainers = async (req, res) => {
 
 export const rejectTrainerApplication = async (req, res) => {
     try {
-        const { id } = req.params;
-        const { rejectionReason } = req.body;
+        const {id} = req.params;
+        const {rejectionReason} = req.body;
 
         const application = await TrainerApplication.findById(id);
         if (!application) {
-            return res.status(404).json({ message: 'Application not found' });
+            return res.status(404).json({message: 'Application not found'});
         }
 
         application.status = 'rejected';
         application.rejectionReason = rejectionReason;
         await application.save();
 
-        res.json({ message: 'Trainer application rejected' });
+        res.json({message: 'Trainer application rejected'});
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({message: error.message});
     }
 };
 
@@ -124,6 +126,46 @@ export const addClass = async (req, res) => {
         const newClass = await Class.create(req.body);
         res.status(201).json(newClass);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({message: error.message});
+    }
+};
+
+
+export const getDashboardData = async (req, res) => {
+    try {
+        const payments = await Payment.aggregate([
+            {
+                $group: {
+                    _id: null,
+                    totalRevenue: {$sum: "$amount"},
+                    totalTransactions: {$sum: 1}
+                }
+            }
+        ]);
+
+        const recentTransactions = await Payment.find()
+            .sort({createdAt: -1})
+            .limit(6)
+            .select('userEmail amount package status createdAt');
+
+        const totalMembers = await User.countDocuments({role: 'member'});
+        const newsletterSubscribers = await NewsLetter.countDocuments();
+
+        const paidMembers = await Payment.distinct('userEmail');
+
+        res.status(200).json({
+            totalMembers,
+            totalRevenue: payments[0]?.totalRevenue || 0,
+            recentTransactions,
+            totalPaidMembers: paidMembers.length,
+            newsletterSubscribers
+
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            error: 'Failed to fetch dashboard data',
+            details: error.message
+        });
     }
 };
