@@ -11,7 +11,7 @@ import userRoutes from "./routes/userRoutes.js"
 import trainerRoutes from "./routes/trainerRoutes.js"
 import adminRoutes from "./routes/adminRoutes.js";
 import classRoutes from "./routes/classRoutes.js";
-
+import paymentRoutes from "./routes/paymentRoutes.js";
 const app = express();
 
 connectDB();
@@ -37,6 +37,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/trainers', trainerRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/classes', classRoutes);
+app.use("/api/stripe", paymentRoutes)
 
 
 

@@ -73,11 +73,6 @@ export const addSlot = async (req, res) => {
             trainerEmail
         });
 
-        await Class.findOneAndUpdate(
-            { name: selectedClass },
-            { $addToSet: { trainers: trainerEmail } },
-            { new: true }
-        );
         res.status(201).json(slot);
     } catch (error) {
         res.status(500).json({message: error.message});
@@ -86,6 +81,7 @@ export const addSlot = async (req, res) => {
 
 export const getTrainerSlots = async (req, res) => {
     const {email} = req.params;
+    console.log(email)
     try {
         const slots = await Slot.find({trainerEmail: email});
         res.json(slots)
