@@ -23,9 +23,28 @@ const userSchema = new mongoose.Schema({
     lastLogin: {
         type: Date,
         default: Date.now
-    }
+    },
+    bookings: [{
+        slotId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Slot',
+            required: true
+        },
+        trainerEmail: {
+            type: String,
+            required: true
+        },
+        paymentId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Payment',
+            required: true
+        },
+        bookingDate: {
+            type: Date,
+            default: Date.now
+        }
+    }]
 }, {
     timestamps: true
 });
-
 export const User = mongoose.model('User', userSchema);
