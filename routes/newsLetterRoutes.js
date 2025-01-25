@@ -1,10 +1,11 @@
 import {Router} from "express";
-import {subscribe} from "../controllers/newsLetterController.js";
+import {getAllSubscribers, subscribe} from "../controllers/newsLetterController.js";
 
 const router = Router()
 
 
 router.post("/subscribe", subscribe)
+router.get("/subscribers", getAllSubscribers)
 
 
 export default router;

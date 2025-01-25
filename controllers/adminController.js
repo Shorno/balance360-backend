@@ -3,6 +3,7 @@ import {User} from "../models/User.js";
 import {Class} from "../models/Class.js";
 import {Payment} from "../models/Payment.js";
 import {NewsLetter} from "../models/NewsLetter.js";
+import {Forum} from "../models/Forum.js";
 
 export const getTrainerApplications = async (req, res) => {
     try {
@@ -169,3 +170,4 @@ export const getDashboardData = async (req, res) => {
         });
     }
 };
+

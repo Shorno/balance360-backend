@@ -13,6 +13,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import classRoutes from "./routes/classRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import newsLetterRoutes from "./routes/newsLetterRoutes.js";
+import forumRoutes from "./routes/forumRoutes.js";
 const app = express();
 
 connectDB();
@@ -40,6 +41,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/classes', classRoutes);
 app.use("/api/payments", paymentRoutes)
 app.use("/api/newsletter", newsLetterRoutes)
+app.use("/api/forum", forumRoutes)
 
 
 

@@ -16,5 +16,4 @@ router.post('/trainer-applications/:id/reject', rejectTrainerApplication);
 router.post("/classes", addClass);
 router.get("/statistics", getDashboardData)
 
-
 export default router;

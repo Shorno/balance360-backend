@@ -15,5 +15,13 @@ export const subscribe = async (req, res) => {
     } catch (error) {
         res.status(500).json({error: error.message});
     }
+}
 
+export const getAllSubscribers = async (req, res) => {
+    try {
+        const subscribers = await NewsLetter.find();
+        res.status(200).json(subscribers);
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
 }
