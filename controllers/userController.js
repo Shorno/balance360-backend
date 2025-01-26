@@ -113,3 +113,65 @@ export const getUserDetailsByEmail = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
+
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
+
+export const getUsersWithReviews = async (req, res) => {
+    try {
+        const users = await User.aggregate([
+            { $match: { reviews: { $exists: true, $not: { $size: 0 } } } },
+
+            { $unwind: "$reviews" },
+
+            { $addFields: {
+                    "reviews.slotName": {
+                        $let: {
+                            vars: {
+                                matchedBooking: {
+                                    $filter: {
+                                        input: "$bookings",
+                                        as: "booking",
+                                        cond: {
+                                            $eq: ["$$booking.trainerEmail", "$reviews.trainerEmail"]
+                                        }
+                                    }
+                                }
+                            },
+                            in: {
+                                $ifNull: [
+                                    { $arrayElemAt: ["$$matchedBooking.slotName", 0] },
+                                    "N/A"
+                                ]
+                            }
+                        }
+                    }
+                }},
+
+            {
+                $group: {
+                    _id: "$_id",
+                    displayName: { $first: "$displayName" },
+                    email: { $first: "$email" },
+                    photoURL: { $first: "$photoURL" },
+                    reviews: { $push: "$reviews" }
+                }
+            },
+
+            { $match: { "reviews.slotName": { $ne: "N/A" } } }
+        ]);
+
+        res.status(200).json({
+            status: 'success',
+            data: users
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

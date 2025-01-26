@@ -1,6 +1,5 @@
 import {Class} from "../models/Class.js";
 import {Slot} from "../models/Slot.js";
-import {User} from "../models/User.js";
 import {TrainerApplication} from "../models/Trainer.js";
 
 export const getAllClasses = async (req, res) => {
@@ -51,3 +50,37 @@ export const getClassWithTrainers = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
+
+
+export const getFeaturedClasses = async (req, res) => {
+    try {
+        // Add explicit projection
+        const topClasses = await Class.find({}, null, {
+            sort: { bookingCount: -1 },
+            limit: 6,
+            collation: { locale: 'en', strength: 2 } // Case-insensitive sorting
+        });
+
+        if(!topClasses?.length) {
+            return res.status(404).json({
+                status: 'success',
+                message: 'No classes found',
+                data: []
+            });
+        }
+
+        console.log('Fetched classes:', topClasses); // Debug log
+
+        return res.status(200).json({
+            status: 'success',
+            data: topClasses
+        });
+
+    } catch (error) {
+        console.error('Error fetching classes:', error);
+        return res.status(500).json({
+            message: 'Server error',
+            error: process.env.NODE_ENV === 'development' ? error.message : null
+        });
+    }
+}
