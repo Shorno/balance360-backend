@@ -24,68 +24,6 @@ export const makePayment = async (req, res) => {
     }
 };
 
-// export const confirmPayment = async (req, res) => {
-//     const session = await mongoose.startSession();
-//     session.startTransaction();
-//
-//     try {
-//         const { slotId, price, planName, trainerEmail, stripePaymentId , userEmail} = req.body;
-//
-//         const slot = await Slot.findById(slotId).session(session);
-//         if (!slot) {
-//             await session.abortTransaction();
-//             return res.status(404).json({ error: 'Slot not found' });
-//         }
-//
-//         const classExists = await Class.findOne({ name: slot.selectedClass }).session(session);
-//         if (!classExists) {
-//             await session.abortTransaction();
-//             return res.status(404).json({ error: 'Class not found' });
-//         }
-//
-//         const payment = await Payment.create([{
-//             userEmail,
-//             trainerEmail,
-//             slotId,
-//             package: planName,
-//             amount: price,
-//             stripeId: stripePaymentId,
-//             status: 'succeeded'
-//         }], { session });
-//
-//         // 4. Update slot
-//         const updatedSlot = await Slot.findByIdAndUpdate(
-//             slotId,
-//             {
-//                 $inc: { bookedCount: 1 },
-//                 $set: {
-//                     isAvailable: { $lt: ["$bookedCount", "$maxCapacity"] }
-//                 }
-//             },
-//             { new: true, session }
-//         );
-//
-//         await Class.findOneAndUpdate(
-//             { name: slot.selectedClass },
-//             { $inc: { bookingCount: 1 } },
-//             { session }
-//         );
-//
-//         await session.commitTransaction();
-//         res.status(200).json({ success: true });
-//
-//     } catch (error) {
-//         await session.abortTransaction();
-//         console.error('Payment confirmation error:', error);
-//         res.status(500).json({
-//             error: 'Payment confirmation failed',
-//             details: error.message
-//         });
-//     } finally {
-//         session.endSession();
-//     }
-// };
-
 export const confirmPayment = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -149,7 +87,14 @@ export const confirmPayment = async (req, res) => {
             {session}
         );
 
-        // 6. Commit transaction
+        // 6. Update Class booking count
+        await Class.findOneAndUpdate(
+            {name: slot.selectedClass},
+            {$inc: {bookingCount: 1}},
+            {session}
+        );
+
+        // 7. Commit transaction
         await session.commitTransaction();
 
         res.status(200).json({
