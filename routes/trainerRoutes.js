@@ -1,5 +1,11 @@
 import {Router} from 'express';
-import {addSlot, applyForTrainer, getTrainerDetails, getTrainerSlots} from "../controllers/trainerController.js";
+import {
+    addSlot,
+    applyForTrainer,
+    getTrainerDetails,
+    getTrainerSlots,
+    getTrainerSlotsDetails
+} from "../controllers/trainerController.js";
 
 
 const router = Router();
@@ -12,6 +18,7 @@ router.get('/:email', getTrainerDetails);
 router.post('/slots', addSlot);
 
 router.get('/slots/:email', getTrainerSlots);
+router.get('/slots/details/:email', getTrainerSlotsDetails);
 
 
 

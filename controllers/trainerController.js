@@ -79,6 +79,7 @@ export const addSlot = async (req, res) => {
     }
 }
 
+
 export const getTrainerSlots = async (req, res) => {
     const {email} = req.params;
     console.log(email)
@@ -89,3 +90,32 @@ export const getTrainerSlots = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 }
+
+export const getTrainerSlotsDetails = async (req, res) => {
+    try {
+        const slots = await Slot.find({trainerEmail: req.params.email}).lean();
+
+        const userEmails = [...new Set(slots.flatMap(slot =>
+            slot.bookedUsers.map(user => user.userEmail)
+        ))];
+
+        const users = await User.find({email: {$in: userEmails}})
+            .select('displayName email photoURL phone')
+            .lean();
+
+        const slotsWithUsers = slots.map(slot => ({
+            ...slot,
+            bookedUsers: slot.bookedUsers.map(bookedUser => ({
+                ...bookedUser,
+                userDetails: users.find(u => u.email === bookedUser.userEmail)
+            }))
+        }));
+
+        res.status(200).json({
+            status: 'success',
+            data: slotsWithUsers
+        });
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+};
