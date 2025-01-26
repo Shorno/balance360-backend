@@ -119,3 +119,15 @@ export const getTrainerSlotsDetails = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
+
+export const deleteSlot = async (req, res) => {
+    try {
+        const slot = await Slot.findByIdAndDelete(req.params.id);
+        if (!slot) {
+            return res.status(404).json({message: 'Slot not found'});
+        }
+        res.json({message: 'Slot deleted successfully'});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}

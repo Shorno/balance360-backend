@@ -1,7 +1,7 @@
 import {Router} from 'express';
 import {
     addSlot,
-    applyForTrainer,
+    applyForTrainer, deleteSlot,
     getTrainerDetails,
     getTrainerSlots,
     getTrainerSlotsDetails
@@ -11,15 +11,11 @@ import {
 const router = Router();
 
 router.post('/apply', applyForTrainer);
-
 router.get('/:email', getTrainerDetails);
-
 router.post('/slots', addSlot);
-
 router.get('/slots/:email', getTrainerSlots);
 router.get('/slots/details/:email', getTrainerSlotsDetails);
-
-
+router.delete('/slots/:id', deleteSlot);
 
 
 export default router;
