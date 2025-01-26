@@ -4,6 +4,7 @@ import {Class} from "../models/Class.js";
 import {Slot} from "../models/Slot.js";
 import mongoose from "mongoose";
 import {User} from "../models/User.js";
+import {TrainerApplication} from "../models/Trainer.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -24,6 +25,7 @@ export const makePayment = async (req, res) => {
     }
 };
 
+
 export const confirmPayment = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -38,14 +40,23 @@ export const confirmPayment = async (req, res) => {
             return res.status(404).json({error: 'User not found'});
         }
 
-        // 2. Get slot with transaction
-        const slot = await Slot.findById(slotId).session(session);
+        // 2. Get slot with transaction and populate trainer details
+        const slot = await Slot.findById(slotId)
+            .session(session);
         if (!slot) {
             await session.abortTransaction();
             return res.status(404).json({error: 'Slot not found'});
         }
 
-        // 3. Create payment record
+        // 3. Get trainer details
+        const trainer = await TrainerApplication.findOne({email: slot.trainerEmail})
+            .session(session);
+        if (!trainer) {
+            await session.abortTransaction();
+            return res.status(404).json({error: 'Trainer not found'});
+        }
+
+        // 4. Create payment record
         const payment = await Payment.create([{
             userEmail,
             trainerEmail: slot.trainerEmail,
@@ -56,7 +67,7 @@ export const confirmPayment = async (req, res) => {
             status: 'succeeded'
         }], {session});
 
-        // 4. Update user bookings
+        // 5. Update user bookings with trainer and slot details
         const updatedUser = await User.findOneAndUpdate(
             {email: userEmail},
             {
@@ -64,15 +75,20 @@ export const confirmPayment = async (req, res) => {
                     bookings: {
                         slotId: slot._id,
                         trainerEmail: slot.trainerEmail,
+                        trainerName: trainer.fullName,
+                        trainerImage: trainer.profileImage,
+                        slotName: slot.slotName,
+                        slotTime: slot.startTime,
+                        slotDuration: slot.slotDuration,
                         paymentId: payment[0]._id,
                         bookingDate: new Date()
                     }
                 }
             },
             {new: true, session}
-        ).select('-password'); // Exclude sensitive fields
+        ).select('-password');
 
-        // 5. Update slot
+        // 6. Update slot
         await Slot.findByIdAndUpdate(
             slotId,
             {
@@ -87,14 +103,14 @@ export const confirmPayment = async (req, res) => {
             {session}
         );
 
-        // 6. Update Class booking count
+        // 7. Update Class booking count
         await Class.findOneAndUpdate(
-            {name: slot.selectedClass},
-            {$inc: {bookingCount: 1}},
-            {session}
+            { name: slot.selectedClass },
+            { $inc: { bookingCount: 1 } },
+            { session }
         );
 
-        // 7. Commit transaction
+        // 8. Commit transaction
         await session.commitTransaction();
 
         res.status(200).json({
@@ -102,6 +118,8 @@ export const confirmPayment = async (req, res) => {
             user: updatedUser,
             payment: payment[0]
         });
+
+        console.log(updatedUser)
 
     } catch (error) {
         await session.abortTransaction();

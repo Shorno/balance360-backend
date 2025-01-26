@@ -9,9 +9,15 @@ const slotSchema = new Schema({
     additionalInfo: {type: String, required: true},
     trainerEmail: {type: String, required: true},
     bookedCount: {type: Number, default: 0},
-    bookedUsers: [{
-        userEmail: { type: String, required: true },
-        paymentId: { type: Schema.Types.ObjectId, ref: 'Payment', required: true },
+    bookings: [{
+        slotId: { type: Schema.Types.ObjectId, ref: 'Slot' },
+        trainerEmail: String,
+        trainerName: String,
+        trainerImage: String,
+        slotName: String,
+        slotTime: String,
+        slotDuration: String,
+        paymentId: { type: Schema.Types.ObjectId, ref: 'Payment' },
         bookingDate: { type: Date, default: Date.now }
     }]
 }, {

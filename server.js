@@ -35,6 +35,8 @@ app.get('/', (req, res) => {
     res.send('Hello, this api server for Fit Fam Project');
 })
 
+//update database
+
 app.use('/api/users', userRoutes);
 app.use('/api/trainers', trainerRoutes);
 app.use('/api/admin', adminRoutes);
