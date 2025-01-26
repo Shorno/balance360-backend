@@ -46,7 +46,7 @@ app.use("/api/newsletter", newsLetterRoutes)
 app.use("/api/forum", forumRoutes)
 
 
-
+//update database
 
 
 const PORT = process.env.PORT || 5000;
