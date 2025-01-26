@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema({
         slotDuration: String,
         paymentId: { type: Schema.Types.ObjectId, ref: 'Payment' },
         bookingDate: { type: Date, default: Date.now }
-    }]
+    }],
 }, {
     timestamps: true
 });

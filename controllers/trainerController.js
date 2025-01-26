@@ -1,7 +1,6 @@
 import {TrainerApplication} from "../models/Trainer.js";
 import {User} from "../models/User.js";
 import {Slot} from "../models/Slot.js";
-import {Class} from "../models/Class.js";
 
 export const applyForTrainer = async (req, res) => {
     try {
