@@ -3,7 +3,7 @@ import {
     addClass,
     approveTrainerApplication, getApprovedTrainers, getDashboardData,
     getTrainerApplicationDetail,
-    getTrainerApplications, rejectTrainerApplication
+    getTrainerApplications, rejectTrainerApplication, removeTrainerById
 } from "../controllers/adminController.js";
 
 const router = Router();
@@ -15,5 +15,7 @@ router.get('/trainers', getApprovedTrainers);
 router.post('/trainer-applications/:id/reject', rejectTrainerApplication);
 router.post("/classes", addClass);
 router.get("/statistics", getDashboardData)
+router.delete("/trainers/:id", removeTrainerById)
+
 
 export default router;

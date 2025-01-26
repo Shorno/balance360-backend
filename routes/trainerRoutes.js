@@ -10,7 +10,6 @@ import {
 
 const router = Router();
 
-// Trainer application
 router.post('/apply', applyForTrainer);
 
 router.get('/:email', getTrainerDetails);

@@ -171,3 +171,29 @@ export const getDashboardData = async (req, res) => {
     }
 };
 
+
+export const removeTrainerById = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const application = await TrainerApplication.findById(id);
+        if (!application) {
+            return res.status(404).json({message: 'Application not found'});
+        }
+
+        const user = await User.findOneAndUpdate(
+            {email: application.email},
+            {role: 'member'},
+            {new: true}
+        );
+
+        await TrainerApplication.findByIdAndDelete(id);
+
+        res.json({
+            message: 'Trainer removed successfully',
+            data: user
+        });
+
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
