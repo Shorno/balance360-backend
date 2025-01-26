@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, {Schema} from 'mongoose';
 
 const userSchema = new mongoose.Schema({
     displayName: {
@@ -25,24 +25,15 @@ const userSchema = new mongoose.Schema({
         default: Date.now
     },
     bookings: [{
-        slotId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Slot',
-            required: true
-        },
-        trainerEmail: {
-            type: String,
-            required: true
-        },
-        paymentId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Payment',
-            required: true
-        },
-        bookingDate: {
-            type: Date,
-            default: Date.now
-        }
+        slotId: { type: Schema.Types.ObjectId, ref: 'Slot' },
+        trainerEmail: String,
+        trainerName: String,
+        trainerImage: String,
+        slotName: String,
+        slotTime: String,
+        slotDuration: String,
+        paymentId: { type: Schema.Types.ObjectId, ref: 'Payment' },
+        bookingDate: { type: Date, default: Date.now }
     }]
 }, {
     timestamps: true

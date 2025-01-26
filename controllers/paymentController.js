@@ -33,7 +33,6 @@ export const confirmPayment = async (req, res) => {
     try {
         const {slotId, userEmail, price, planName, stripePaymentId} = req.body;
 
-        // 1. Validate user exists
         const user = await User.findOne({email: userEmail}).session(session);
         if (!user) {
             await session.abortTransaction();
@@ -48,6 +47,8 @@ export const confirmPayment = async (req, res) => {
             return res.status(404).json({error: 'Slot not found'});
         }
 
+        console.log(slot)
+
         // 3. Get trainer details
         const trainer = await TrainerApplication.findOne({email: slot.trainerEmail})
             .session(session);
@@ -55,6 +56,8 @@ export const confirmPayment = async (req, res) => {
             await session.abortTransaction();
             return res.status(404).json({error: 'Trainer not found'});
         }
+
+        console.log("trainer", trainer)
 
         // 4. Create payment record
         const payment = await Payment.create([{

@@ -94,9 +94,10 @@ export const getTrainerSlots = async (req, res) => {
 export const getTrainerSlotsDetails = async (req, res) => {
     try {
         const slots = await Slot.find({trainerEmail: req.params.email}).lean();
+        console.log(slots);
 
         const userEmails = [...new Set(slots.flatMap(slot =>
-            slot.bookedUsers.map(user => user.userEmail)
+            (slot.bookedUsers || []).map(user => user.userEmail)
         ))];
 
         const users = await User.find({email: {$in: userEmails}})
@@ -105,7 +106,7 @@ export const getTrainerSlotsDetails = async (req, res) => {
 
         const slotsWithUsers = slots.map(slot => ({
             ...slot,
-            bookedUsers: slot.bookedUsers.map(bookedUser => ({
+            bookedUsers: (slot.bookedUsers || []).map(bookedUser => ({
                 ...bookedUser,
                 userDetails: users.find(u => u.email === bookedUser.userEmail)
             }))
