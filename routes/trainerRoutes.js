@@ -6,11 +6,11 @@ import {
     getTrainerSlots,
     getTrainerSlotsDetails
 } from "../controllers/trainerController.js";
-
+import {authenticate} from "../middleware/auth.js";
 
 const router = Router();
 
-router.post('/apply', applyForTrainer);
+router.post('/apply', authenticate, applyForTrainer);
 router.get('/:email', getTrainerDetails);
 router.post('/slots', addSlot);
 router.get('/slots/:email', getTrainerSlots);

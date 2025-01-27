@@ -15,6 +15,8 @@ import paymentRoutes from "./routes/paymentRoutes.js";
 import newsLetterRoutes from "./routes/newsLetterRoutes.js";
 import forumRoutes from "./routes/forumRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import publicRoutes from "./routes/publicRoutes.js";
+
 const app = express();
 
 connectDB();
@@ -46,7 +48,7 @@ app.use("/api/payments", paymentRoutes)
 app.use("/api/newsletter", newsLetterRoutes)
 app.use("/api/forum", forumRoutes)
 app.use("/api/reviews", reviewRoutes)
-
+app.use("/api/public", publicRoutes)
 
 
 const PORT = process.env.PORT || 5000;

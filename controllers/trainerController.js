@@ -131,3 +131,12 @@ export const deleteSlot = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 }
+
+export const getFeaturedTrainers = async (req, res) => {
+    try {
+        const trainers = await TrainerApplication.find({status: 'approved'}).limit(3);
+        res.json(trainers);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
