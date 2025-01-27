@@ -28,6 +28,45 @@ export const getPaginatedClasses = async (req, res) => {
     }
 };
 
+export const searchClasses = async (req, res) => {
+    try {
+        const { q: searchQuery, page = 1, limit = 6 } = req.query
+        const skip = (Number.parseInt(page) - 1) * Number.parseInt(limit)
+
+        const searchRegex = new RegExp(searchQuery, "i")
+
+        const query = searchQuery
+            ? {
+                $or: [{ name: searchRegex }, { category: searchRegex }, { details: searchRegex }],
+            }
+            : {}
+
+        const [classes, total] = await Promise.all([
+            Class.find(query)
+                .skip(skip)
+                .limit(Number.parseInt(limit))
+                .populate("trainers", "fullName email profileImage")
+                .lean(),
+            Class.countDocuments(query),
+        ])
+
+        const totalPages = Math.ceil(total / Number.parseInt(limit))
+
+        res.json({
+            data: classes,
+            currentPage: Number.parseInt(page),
+            totalPages,
+            total,
+            limit: Number.parseInt(limit),
+        })
+    } catch (error) {
+        console.error("Search error:", error)
+        res.status(500).json({ message: "Error searching classes" })
+    }
+}
+
+
+
 
 export const getAllClasses = async (req, res) => {
     try {

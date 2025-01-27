@@ -3,12 +3,13 @@ import {
     getPaginatedClasses,
     getClassWithTrainers,
     getFeaturedClasses,
-    getAllClasses,
+    getAllClasses, searchClasses,
 } from "../controllers/classController.js";
 
 const router = Router()
 
 router.get("/", getPaginatedClasses)
+router.get("/search", searchClasses)
 router.get("/all", getAllClasses)
 router.get("/featured", getFeaturedClasses)
 router.get("/:id", getClassWithTrainers)
