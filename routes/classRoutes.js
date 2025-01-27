@@ -1,9 +1,15 @@
 import {Router} from "express";
-import {getAllClasses, getClassWithTrainers, getFeaturedClasses,} from "../controllers/classController.js";
+import {
+    getPaginatedClasses,
+    getClassWithTrainers,
+    getFeaturedClasses,
+    getAllClasses,
+} from "../controllers/classController.js";
 
 const router = Router()
 
-router.get("/", getAllClasses)
+router.get("/", getPaginatedClasses)
+router.get("/all", getAllClasses)
 router.get("/featured", getFeaturedClasses)
 router.get("/:id", getClassWithTrainers)
 

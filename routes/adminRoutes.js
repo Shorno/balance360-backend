@@ -11,9 +11,9 @@ import {checkRole} from "../middleware/checkRole.js";
 const router = Router();
 
 router.get('/trainer-applications', authenticate, getTrainerApplications);
-router.get('/trainer-applications/:id', authenticate, checkRole("admin"), getTrainerApplicationDetail);
+router.get('/trainer-applications/:id', getTrainerApplicationDetail);
 router.post('/trainer-applications/:id/approve', authenticate, checkRole("admin"), approveTrainerApplication);
-router.get('/trainers', authenticate, checkRole("admin"), getApprovedTrainers);
+router.get('/trainers', getApprovedTrainers);
 router.post('/trainer-applications/:id/reject', authenticate, checkRole("admin"), rejectTrainerApplication);
 router.post("/classes", authenticate, checkRole("admin"), addClass);
 router.get("/statistics", authenticate, checkRole("admin"), getDashboardData)

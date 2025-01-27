@@ -2,7 +2,9 @@ import {Class} from "../models/Class.js";
 import {Slot} from "../models/Slot.js";
 import {TrainerApplication} from "../models/Trainer.js";
 
-export const getAllClasses = async (req, res) => {
+
+
+export const getPaginatedClasses = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 6;
@@ -13,7 +15,6 @@ export const getAllClasses = async (req, res) => {
             .sort({ _id: 1 })
             .skip(skip)
             .limit(limit);
-
 
         res.json({
             data: foundClasses,
@@ -26,6 +27,19 @@ export const getAllClasses = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
+
+
+export const getAllClasses = async (req, res) => {
+    try {
+        const classes = await Class.find();
+        return res.status(200).json({
+            status: 'success',
+            data: classes,
+        });
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
 
 export const getClassWithTrainers = async (req, res) => {
     try {
