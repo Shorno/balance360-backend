@@ -10,12 +10,42 @@ export const createForum = async (req, res) => {
     }
 };
 
+
 export const getForumPosts = async (req, res) => {
     try {
-        const forum = await Forum.find();
-        res.status(200).json(forum);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 6;
+        const skip = (page - 1) * limit;
+
+        const total = await Forum.countDocuments();
+
+        const forumPosts = await Forum.find()
+            .sort({createdAt: -1})
+            .skip(skip)
+            .limit(limit);
+
+        res.status(200).json({
+            data: forumPosts,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit)
+        });
     } catch (error) {
-        res.status(404).json({message: error.message});
+        res.status(500).json({message: error.message});
+    }
+};
+
+
+export const getLatestForumPosts = async (req, res) => {
+    try {
+        const forumPosts = await Forum.find()
+            .sort({createdAt: -1})
+            .limit(6);
+
+        res.status(200).json(forumPosts);
+    } catch (error) {
+        res.status(500).json({message: error.message});
     }
 }
 
