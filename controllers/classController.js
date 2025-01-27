@@ -4,16 +4,28 @@ import {TrainerApplication} from "../models/Trainer.js";
 
 export const getAllClasses = async (req, res) => {
     try {
-        const classes = await Class.find();
-        return res.status(200).json({
-            status: 'success',
-            data: classes,
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 6;
+        const skip = (page - 1) * limit;
+
+        const total = await Class.countDocuments();
+        const foundClasses = await Class.find()
+            .sort({ _id: 1 })
+            .skip(skip)
+            .limit(limit);
+
+
+        res.json({
+            data: foundClasses,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit)
         });
     } catch (error) {
         res.status(500).json({message: error.message});
     }
-}
-
+};
 
 export const getClassWithTrainers = async (req, res) => {
     try {
@@ -22,7 +34,6 @@ export const getClassWithTrainers = async (req, res) => {
         if (!foundClass) {
             return res.status(404).json({message: 'Class not found'});
         }
-
         const slots = await Slot.find({selectedClass: foundClass.name});
 
         const trainerEmails = [...new Set(slots.map(slot => slot.trainerEmail))];
@@ -54,22 +65,19 @@ export const getClassWithTrainers = async (req, res) => {
 
 export const getFeaturedClasses = async (req, res) => {
     try {
-        // Add explicit projection
         const topClasses = await Class.find({}, null, {
-            sort: { bookingCount: -1 },
+            sort: {bookingCount: -1},
             limit: 6,
-            collation: { locale: 'en', strength: 2 } // Case-insensitive sorting
+            collation: {locale: 'en', strength: 2}
         });
 
-        if(!topClasses?.length) {
+        if (!topClasses?.length) {
             return res.status(404).json({
                 status: 'success',
                 message: 'No classes found',
                 data: []
             });
         }
-
-        console.log('Fetched classes:', topClasses); // Debug log
 
         return res.status(200).json({
             status: 'success',
@@ -80,7 +88,7 @@ export const getFeaturedClasses = async (req, res) => {
         console.error('Error fetching classes:', error);
         return res.status(500).json({
             message: 'Server error',
-            error: process.env.NODE_ENV === 'development' ? error.message : null
+            error: error.message,
         });
     }
 }
