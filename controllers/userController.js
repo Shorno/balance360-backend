@@ -8,7 +8,7 @@ const generateToken = (user) => {
 
 
 export const createOrUpdateUser = async (req, res) => {
-    const {email, displayName, photoURL} = req.body;
+    const {email, displayName, photoURL, bio, location, website} = req.body;
 
     console.log(req.body);
 
@@ -28,6 +28,9 @@ export const createOrUpdateUser = async (req, res) => {
                     $set: {
                         displayName,
                         photoURL,
+                        bio,
+                        location,
+                        website,
                     }
                 },
                 {
@@ -126,11 +129,12 @@ export const getAllUsers = async (req, res) => {
 export const getUsersWithReviews = async (req, res) => {
     try {
         const users = await User.aggregate([
-            { $match: { reviews: { $exists: true, $not: { $size: 0 } } } },
+            {$match: {reviews: {$exists: true, $not: {$size: 0}}}},
 
-            { $unwind: "$reviews" },
+            {$unwind: "$reviews"},
 
-            { $addFields: {
+            {
+                $addFields: {
                     "reviews.slotName": {
                         $let: {
                             vars: {
@@ -146,25 +150,26 @@ export const getUsersWithReviews = async (req, res) => {
                             },
                             in: {
                                 $ifNull: [
-                                    { $arrayElemAt: ["$$matchedBooking.slotName", 0] },
+                                    {$arrayElemAt: ["$$matchedBooking.slotName", 0]},
                                     "N/A"
                                 ]
                             }
                         }
                     }
-                }},
+                }
+            },
 
             {
                 $group: {
                     _id: "$_id",
-                    displayName: { $first: "$displayName" },
-                    email: { $first: "$email" },
-                    photoURL: { $first: "$photoURL" },
-                    reviews: { $push: "$reviews" }
+                    displayName: {$first: "$displayName"},
+                    email: {$first: "$email"},
+                    photoURL: {$first: "$photoURL"},
+                    reviews: {$push: "$reviews"}
                 }
             },
 
-            { $match: { "reviews.slotName": { $ne: "N/A" } } }
+            {$match: {"reviews.slotName": {$ne: "N/A"}}}
         ]);
 
         res.status(200).json({
@@ -172,6 +177,6 @@ export const getUsersWithReviews = async (req, res) => {
             data: users
         });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({message: error.message});
     }
 };

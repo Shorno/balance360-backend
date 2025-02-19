@@ -24,6 +24,18 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    bio: {
+        type: String,
+        trim: true
+    },
+    location: {
+        type: String,
+        trim: true
+    },
+    website: {
+        type: String,
+        trim: true
+    },
     bookings: [{
         slotId: { type: Schema.Types.ObjectId, ref: 'Slot' },
         trainerEmail: String,
